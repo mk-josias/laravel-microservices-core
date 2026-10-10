@@ -23,6 +23,7 @@ is a deployment choice; the code that calls it, announces to it or copies its ro
 
 ```bash
 composer require mk-josias/laravel-microservices
+composer require mk-josias/http-rpc             # the http driver of calls between services
 composer require mk-josias/redis-event-stream   # an events driver, then MICROSERVICES_STREAM_DRIVER=redis
 php artisan vendor:publish --tag=microservices-config
 php artisan migrate   # the outbox tables: event_publications, event_consumptions

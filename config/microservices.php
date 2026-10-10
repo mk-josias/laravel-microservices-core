@@ -30,9 +30,10 @@ return [
     |--------------------------------------------------------------------------
     | Calls between services
     |--------------------------------------------------------------------------
-    | Named transports, like queue connections; a driver other than `http`
-    | comes from Services\Rpc\TransportManager::extend(). A service's host may name the
-    | one its calls travel on.
+    | Named transports, like queue connections; every driver comes from
+    | Services\Rpc\TransportManager::extend(), `http` from mk-josias/http-rpc,
+    | which reads path, middleware_group, secret and signature_ttl. A service's
+    | host may name the one its calls travel on.
     */
 
     'rpc' => [

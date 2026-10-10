@@ -67,21 +67,20 @@ src/
 ├── Data/           Envelope
 ├── Events/         Event · ShadowChanged · ShadowWanted
 ├── Handlers/       SyncShadows · AnnounceShadowSource
-├── Http/           Controllers/RpcController · Middleware/VerifyRpcSignature
 ├── Models/         ShadowModel          Migrations/ ShadowMigration          Traits/ ShadowSource
 ├── Console/        LocalServicesOption · ArchiveOptions · Commands/{Publish,Republish,Consume,Trim,Export,Import}Events · {Announce,Want}Shadows
 ├── Exceptions/     ServiceException · ConfigurationException
 ├── Testing/        InteractsWithServices
 ├── Services/
 │   ├── SingleService.php
-│   ├── Rpc/        RpcService · RpcServices · LocalServices · RpcSignature · TransportManager
+│   ├── Rpc/        RpcService · RpcServices · LocalServices · TransportManager
 │   ├── Stream/     Emitter · Dispatcher · EnvelopeFactory · TransportManager · PayloadVersions · Outbox/{Writer, Relay, Archive, ArchiveStores, FileArchiveStore}
 │   └── Shadows/    ShadowRegistry
 └── Transports/
-    ├── Rpc/        HttpTransport
     └── Stream/     ArrayTransport · NullTransport
 
 the drivers, packages of their own:
+├── mk-josias/http-rpc             HttpRpc\           HttpTransport · RpcController · VerifyRpcSignature · RpcSignature · HttpRpc · HttpRpcServiceProvider
 ├── mk-josias/redis-event-stream   RedisEventStream\  RedisStreamTransport · RedisStream · RedisEventStreamServiceProvider
 └── mk-josias/queue-event-stream   QueueEventStream\  QueueTransport · QueueStream · QueueEventStreamServiceProvider
 ```

@@ -55,33 +55,11 @@ final readonly class Rpc
         return $host ?? throw ConfigurationException::missingRpcHost($service);
     }
 
-    /** Where a service answers a call, the same for caller and called: {service} and {method} are filled in. */
-    public function getPath(): string
-    {
-        return trim((string) $this->config->get('microservices.rpc.path', '{service}/rpc/{method}'), '/');
-    }
-
-    /** The middleware group of the called side's routes, which checks the signature. */
-    public function getMiddlewareGroup(): string
-    {
-        return (string) $this->config->get('microservices.rpc.middleware_group', 'rpc');
-    }
-
-    public function getSecret(): string
-    {
-        return (string) $this->config->get('microservices.rpc.secret', '');
-    }
-
     /** Null is the application's default cache store. */
     public function getCacheStore(): ?string
     {
         $store = $this->config->get('microservices.rpc.cache');
 
         return is_string($store) && $store !== '' ? $store : null;
-    }
-
-    public function getSignatureTtl(): int
-    {
-        return (int) $this->config->get('microservices.rpc.signature_ttl', 30);
     }
 }

@@ -50,7 +50,8 @@ a plain method call.
 
 ## The called side
 
-The package serves `POST {service}/rpc/{method}` for each service this process runs, in the `rpc`
+The `http` driver comes with its own package, [`mk-josias/http-rpc`](https://github.com/mk-josias/laravel-microservices/tree/main/packages/http-rpc).
+It serves `POST {service}/rpc/{method}` for each service this process runs, in the `rpc`
 middleware group. `microservices.rpc.path` and `microservices.rpc.middleware_group` change both,
 for instance to `internal/{service}/{method}`: the caller reads the same path, so every service
 must set the same one. It rejects a request that is unsigned, too old, modified or replayed: each call is

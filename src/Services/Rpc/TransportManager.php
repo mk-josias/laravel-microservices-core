@@ -9,7 +9,6 @@ use Illuminate\Contracts\Container\Container;
 use Microservices\Config\Rpc;
 use Microservices\Contracts\Rpc\Transport;
 use Microservices\Exceptions\ConfigurationException;
-use Microservices\Transports\Rpc\HttpTransport;
 
 /**
  * Routes each call to the named transport of microservices.rpc.transports its service's host
@@ -57,13 +56,10 @@ final class TransportManager implements Transport
     {
         $driver = (string) ($config['driver'] ?? '');
 
-        if (isset($this->creators[$driver])) {
-            return ($this->creators[$driver])($this->container, $config, $name);
+        if (! isset($this->creators[$driver])) {
+            throw ConfigurationException::unknownRpcDriver($driver, $name);
         }
 
-        return match ($driver) {
-            'http' => $this->container->make(HttpTransport::class),
-            default => throw ConfigurationException::unknownRpcDriver($driver, $name),
-        };
+        return ($this->creators[$driver])($this->container, $config, $name);
     }
 }

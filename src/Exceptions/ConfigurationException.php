@@ -40,7 +40,9 @@ final class ConfigurationException extends RuntimeException
 
     public static function unknownRpcDriver(string $driver, string $transport): self
     {
-        return new self("RPC driver [{$driver}] of transport [{$transport}] is not supported: register it with Services\Rpc\TransportManager::extend().");
+        return new self($driver === 'http'
+            ? "RPC driver [http] of transport [{$transport}] comes with its own package: composer require mk-josias/http-rpc."
+            : "RPC driver [{$driver}] of transport [{$transport}] is not supported: register it with Services\\Rpc\\TransportManager::extend().");
     }
 
     public static function untrackedAcknowledgements(string $stream): self

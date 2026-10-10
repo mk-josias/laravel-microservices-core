@@ -5,10 +5,7 @@ declare(strict_types=1);
 namespace Microservices\Providers;
 
 use Illuminate\Contracts\Foundation\Application;
-use Illuminate\Routing\Router;
-use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
-use Microservices\Config\Rpc;
 use Microservices\Console\Commands\AnnounceShadows;
 use Microservices\Console\Commands\ConsumeEvents;
 use Microservices\Console\Commands\ExportEvents;
@@ -23,8 +20,6 @@ use Microservices\Contracts\Colocation;
 use Microservices\Contracts\Rpc\Transport as RpcTransport;
 use Microservices\Contracts\Stream\Bus;
 use Microservices\Contracts\Stream\Transport;
-use Microservices\Http\Controllers\RpcController;
-use Microservices\Http\Middleware\VerifyRpcSignature;
 use Microservices\Services\Rpc\LocalServices;
 use Microservices\Services\Rpc\RpcServices;
 use Microservices\Services\Rpc\TransportManager as RpcTransportManager;
@@ -71,17 +66,6 @@ final class MicroservicesServiceProvider extends ServiceProvider
         ], 'microservices-config');
 
         $this->loadMigrationsFrom(__DIR__.'/../../database/migrations');
-
-        // The called side of Transports\Rpc\HttpTransport, one endpoint per local service: nothing unsigned reaches it.
-        $rpc = $this->app->make(Rpc::class);
-        $this->app->make(Router::class)->pushMiddlewareToGroup($rpc->getMiddlewareGroup(), VerifyRpcSignature::class);
-
-        foreach ($this->app->make(Colocation::class)->local() as $service) {
-            Route::post(str_replace('{service}', $service, $rpc->getPath()), RpcController::class)
-                ->middleware($rpc->getMiddlewareGroup())
-                ->defaults('service', $service)
-                ->name("microservices.rpc.{$service}");
-        }
 
         if ($this->app->runningInConsole()) {
             $this->commands([
