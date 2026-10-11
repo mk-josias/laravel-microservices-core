@@ -80,7 +80,7 @@ src/
     └── Stream/     ArrayTransport · NullTransport
 
 the drivers, packages of their own:
-├── mk-josias/http-rpc             HttpRpc\           HttpTransport · RpcController · VerifyRpcSignature · RpcSignature · HttpRpc · HttpRpcServiceProvider
-├── mk-josias/redis-event-stream   RedisEventStream\  RedisStreamTransport · RedisStream · RedisEventStreamServiceProvider
-└── mk-josias/queue-event-stream   QueueEventStream\  QueueTransport · QueueStream · QueueEventStreamServiceProvider
+├── mk-josias/laravel-microservices-http-rpc       HttpRpc\           HttpTransport · RpcController · VerifyRpcSignature · RpcSignature · HttpRpc · HttpRpcServiceProvider
+├── mk-josias/laravel-microservices-redis-stream   RedisEventStream\  RedisStreamTransport · RedisStream · RedisEventStreamServiceProvider
+└── mk-josias/laravel-microservices-queue-stream   QueueEventStream\  QueueTransport · QueueStream · QueueEventStreamServiceProvider
 ```

@@ -21,9 +21,9 @@
         "laravel/framework": "^12.0 || ^13.0"
     },
     "suggest": {
-        "mk-josias/http-rpc": "The http RPC driver, signed calls between services",
-        "mk-josias/redis-event-stream": "The redis events driver, on Redis Streams",
-        "mk-josias/queue-event-stream": "The queue events driver, for a stack without Redis"
+        "mk-josias/laravel-microservices-http-rpc": "The http RPC driver, signed calls between services",
+        "mk-josias/laravel-microservices-redis-stream": "The redis events driver, on Redis Streams",
+        "mk-josias/laravel-microservices-queue-stream": "The queue events driver, for a stack without Redis"
     },
     "autoload": {
         "psr-4": {

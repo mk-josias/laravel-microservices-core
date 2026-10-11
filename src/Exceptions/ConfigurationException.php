@@ -26,7 +26,7 @@ final class ConfigurationException extends RuntimeException
 
     public static function unknownDriver(string $driver, string $stream): self
     {
-        $package = ['redis' => 'mk-josias/redis-event-stream', 'queue' => 'mk-josias/queue-event-stream'][$driver] ?? null;
+        $package = ['redis' => 'mk-josias/laravel-microservices-redis-stream', 'queue' => 'mk-josias/laravel-microservices-queue-stream'][$driver] ?? null;
 
         return new self($package === null
             ? "Stream driver [{$driver}] of stream [{$stream}] is not supported: register it with Services\\Stream\\TransportManager::extend()."
@@ -41,7 +41,7 @@ final class ConfigurationException extends RuntimeException
     public static function unknownRpcDriver(string $driver, string $transport): self
     {
         return new self($driver === 'http'
-            ? "RPC driver [http] of transport [{$transport}] comes with its own package: composer require mk-josias/http-rpc."
+            ? "RPC driver [http] of transport [{$transport}] comes with its own package: composer require mk-josias/laravel-microservices-http-rpc."
             : "RPC driver [{$driver}] of transport [{$transport}] is not supported: register it with Services\\Rpc\\TransportManager::extend().");
     }
 

@@ -11,8 +11,8 @@ outbox, and read-only copies of each other's rows. It depends on nothing but Lar
 - **Copies of another service's rows.** A service keeps the columns it needs from another service's
   table in its own database, kept up to date by events.
 - **Any broker, any language.** Events travel through a driver installed next to the package:
-  [Redis Streams](https://github.com/mk-josias/laravel-microservices/tree/main/packages/redis-event-stream),
-  [Laravel queues](https://github.com/mk-josias/laravel-microservices/tree/main/packages/queue-event-stream),
+  [Redis Streams](https://github.com/mk-josias/laravel-microservices/tree/main/packages/redis-stream),
+  [Laravel queues](https://github.com/mk-josias/laravel-microservices/tree/main/packages/queue-stream),
   or your own, through one interface. The wire format is plain JSON, so a service in Node or Go can take part.
 
 [laravel-distributable-modules](https://github.com/mk-josias/laravel-distributable-modules) builds on this package to run
@@ -23,8 +23,8 @@ is a deployment choice; the code that calls it, announces to it or copies its ro
 
 ```bash
 composer require mk-josias/laravel-microservices
-composer require mk-josias/http-rpc             # the http driver of calls between services
-composer require mk-josias/redis-event-stream   # an events driver, then MICROSERVICES_STREAM_DRIVER=redis
+composer require mk-josias/laravel-microservices-http-rpc       # the http driver of calls between services
+composer require mk-josias/laravel-microservices-redis-stream   # an events driver, then MICROSERVICES_STREAM_DRIVER=redis
 php artisan vendor:publish --tag=microservices-config
 php artisan migrate   # the outbox tables: event_publications, event_consumptions
 ```

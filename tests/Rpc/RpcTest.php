@@ -13,4 +13,4 @@ it('refuses a method of a contract the service does not answer', function () {
 
 it('names the package of the http driver when it is not installed', function () {
     app(BillingService::class)->invoiceFor(7);
-})->throws(ConfigurationException::class, 'composer require mk-josias/http-rpc');
+})->throws(ConfigurationException::class, 'composer require mk-josias/laravel-microservices-http-rpc');

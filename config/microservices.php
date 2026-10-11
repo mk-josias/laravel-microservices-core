@@ -31,7 +31,7 @@ return [
     | Calls between services
     |--------------------------------------------------------------------------
     | Named transports, like queue connections; every driver comes from
-    | Services\Rpc\TransportManager::extend(), `http` from mk-josias/http-rpc,
+    | Services\Rpc\TransportManager::extend(), `http` from mk-josias/laravel-microservices-http-rpc,
     | which reads path, middleware_group, secret and signature_ttl. A service's
     | host may name the one its calls travel on.
     */
@@ -64,7 +64,7 @@ return [
     | driver's options. An event travels on the stream its stream() method
     | names, or on the default one. Drivers: `array` (in memory, for tests),
     | `null` (drops everything), and from their own packages `redis`
-    | (mk-josias/redis-event-stream) and `queue` (mk-josias/queue-event-stream).
+    | (mk-josias/laravel-microservices-redis-stream) and `queue` (mk-josias/laravel-microservices-queue-stream).
     | Any other driver resolves through a creator registered with extend().
     */
 
@@ -86,7 +86,7 @@ return [
             ],
 
             // 'jobs' => [
-            //     'driver' => 'queue', // mk-josias/queue-event-stream
+            //     'driver' => 'queue', // mk-josias/laravel-microservices-queue-stream
             //     'connection' => env('MICROSERVICES_QUEUE_CONNECTION'),
             //     'key' => 'microservices-jobs', // each service reads {key}-{service}
             //     'sleep' => 1,                  // seconds to wait when the queue is empty
