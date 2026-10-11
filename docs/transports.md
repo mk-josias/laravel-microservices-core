@@ -7,8 +7,8 @@ app(\Microservices\Services\Stream\TransportManager::class)
     ->extend('kafka', fn ($app, array $options, string $stream) => new KafkaTransport($options));
 ```
 
-[redis-stream](https://github.com/mk-josias/laravel-microservices/tree/main/packages/redis-stream) and
-[queue-stream](https://github.com/mk-josias/laravel-microservices/tree/main/packages/queue-stream) are built this way: a provider that calls
+[stream-redis](https://github.com/mk-josias/laravel-microservices/tree/main/packages/stream-redis) and
+[stream-queue](https://github.com/mk-josias/laravel-microservices/tree/main/packages/stream-queue) are built this way: a provider that calls
 `extend()`, and nothing else in the package knows them.
 
 ## The contract

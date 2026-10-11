@@ -2,8 +2,8 @@
 
 `php artisan vendor:publish --tag=microservices-config` publishes `config/microservices.php`. The
 package reads it only through the classes in `Microservices\Config\`: `Services`, `Rpc` and
-`Streamer`. A driver reads its own stream options: `RedisEventStream\RedisStream`,
-`QueueEventStream\QueueStream`.
+`Streamer`. A driver reads its own stream options: `StreamRedis\RedisStream`,
+`StreamQueue\QueueStream`.
 
 | Key | Default | |
 |---|---|---|
@@ -80,7 +80,7 @@ src/
     └── Stream/     ArrayTransport · NullTransport
 
 the drivers, packages of their own:
-├── mk-josias/laravel-microservices-http-rpc       HttpRpc\           HttpTransport · RpcController · VerifyRpcSignature · RpcSignature · HttpRpc · HttpRpcServiceProvider
-├── mk-josias/laravel-microservices-redis-stream   RedisEventStream\  RedisStreamTransport · RedisStream · RedisEventStreamServiceProvider
-└── mk-josias/laravel-microservices-queue-stream   QueueEventStream\  QueueTransport · QueueStream · QueueEventStreamServiceProvider
+├── mk-josias/laravel-microservices-rpc-http       RpcHttp\           HttpTransport · RpcController · VerifyRpcSignature · RpcSignature · RpcHttp · RpcHttpServiceProvider
+├── mk-josias/laravel-microservices-stream-redis   StreamRedis\  RedisStreamTransport · RedisStream · StreamRedisServiceProvider
+└── mk-josias/laravel-microservices-stream-queue   StreamQueue\  QueueTransport · QueueStream · StreamQueueServiceProvider
 ```
