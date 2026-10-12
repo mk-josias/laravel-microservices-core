@@ -12,6 +12,7 @@ final class ShadowChanged extends Event
     /**
      * @param  array<string, mixed>  $attributes
      * @param  list<string>  $keepers  the only services to update their copy; empty for all of them
+     * @param  string|null  $stream  the stream the source model names; null for the default one
      */
     public function __construct(
         private readonly string $sourceService,
@@ -19,12 +20,18 @@ final class ShadowChanged extends Event
         private readonly int|string $key,
         private readonly array $attributes,
         private readonly array $keepers = [],
+        private readonly ?string $stream = null,
     ) {}
 
     /** @return list<string> */
     public function recipients(): array
     {
         return $this->keepers;
+    }
+
+    public function stream(): ?string
+    {
+        return $this->stream;
     }
 
     public function name(): string

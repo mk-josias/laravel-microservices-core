@@ -44,6 +44,12 @@ trait ShadowSource
             ?? throw ServiceException::outsideService(static::class);
     }
 
+    /** The stream of microservices.events.streams this model's rows are announced on; override it, null is the default one. */
+    public function shadowStream(): ?string
+    {
+        return null;
+    }
+
     /**
      * A source row deleted for good still reaches the copies, as a soft delete of theirs.
      *
@@ -63,6 +69,7 @@ trait ShadowSource
             key: $this->getKey(),
             attributes: $attributes,
             keepers: $keepers,
+            stream: $this->shadowStream(),
         ));
     }
 

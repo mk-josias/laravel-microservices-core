@@ -7,8 +7,10 @@ use Microservices\Contracts\Stream\Transport;
 use Microservices\Data\Envelope;
 use Microservices\Events\ShadowChanged;
 use Microservices\Services\Stream\Dispatcher;
+use Microservices\Services\Stream\TransportManager;
 use Microservices\Tests\Fixtures\App\Models\CustomerShadow;
 use Microservices\Tests\Fixtures\App\Models\Order;
+use Microservices\Tests\Fixtures\App\Models\Refund;
 
 function customerChanged(int $key, array $attributes): Envelope
 {
@@ -52,4 +54,30 @@ it('announces a source row with only its shadowed fields, as this service', func
     expect($envelope->emitter)->toBe('orders')
         ->and($envelope->name)->toBe(ShadowChanged::NAME)
         ->and($envelope->payload)->toBe(['source' => 'orders', 'key' => $order->id, 'attributes' => ['total' => 120]]);
+});
+
+it('announces a source row on the stream its model names, not on the default one', function () {
+    config()->set('microservices.events.streams.shadows.driver', 'array');
+
+    $refund = Refund::query()->create(['amount' => 30]);
+
+    $envelope = app(TransportManager::class)->stream('shadows')->published()[0];
+
+    expect($envelope->stream)->toBe('shadows')
+        ->and($envelope->name)->toBe(ShadowChanged::NAME)
+        ->and($envelope->payload)->toBe(['source' => 'refunds', 'key' => $refund->id, 'attributes' => ['amount' => 30]])
+        ->and(app(Transport::class)->published())->toBe([]);
+});
+
+it('publishes the outbox row of a source row on the stream it was announced on', function () {
+    config()->set('microservices.events.streams.shadows', ['driver' => 'array', 'outbox' => true]);
+
+    DB::transaction(fn () => Refund::query()->create(['amount' => 30]));
+
+    expect(DB::table('event_publications')->where('stream', 'shadows')->whereNull('published_at')->count())->toBe(1);
+
+    $this->artisan('stream:publish', ['--once' => true])->assertSuccessful();
+
+    expect(app(TransportManager::class)->stream('shadows')->published())->toHaveCount(1)
+        ->and(app(Transport::class)->published())->toBe([]);
 });

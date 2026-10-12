@@ -17,6 +17,11 @@ return new class extends Migration
             $table->string('note')->default('');
         });
 
+        Schema::create('refunds', function (Blueprint $table): void {
+            $table->id();
+            $table->integer('amount');
+        });
+
         Schema::create('paid_orders', function (Blueprint $table): void {
             $table->integer('order_id');
         });

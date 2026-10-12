@@ -75,5 +75,42 @@ php artisan shadows:announce customers [--keepers=orders]          # on the owne
 ```
 
 Both commands address the event through its `recipients`, so only those services update their
-copy. A service in another language can be the source: see
+copy.
+
+## On its own stream
+
+Every source row is announced by a `microservices.shadow.changed` event, on the default stream.
+A source model can name another stream of `microservices.events.streams` by overriding
+`shadowStream()`; its rows, and only its rows, travel on it:
+
+```php
+// billing: Customer's rows go on the `shadows` stream, the other events stay on the default one
+public function shadowStream(): ?string
+{
+    return 'shadows';
+}
+```
+
+```php
+// config/microservices.php, in billing and in every service keeping the copy
+'events' => ['streams' => [
+    'default' => ['driver' => 'redis', 'outbox' => true],
+    'shadows' => ['driver' => 'redis', 'outbox' => true],
+]],
+```
+
+```bash
+php artisan stream:consume --stream=shadows   # on the keeper: one consumer per stream
+```
+
+A keeper has to read that stream, or its copy stays empty. The outbox follows the stream: a row
+announced on `shadows` is written to `event_publications` with that stream, then published there.
+`shadows:want` and `shadows:announce` need nothing more: the want goes out on the default stream,
+the answer on the source's own.
+
+An order is kept only within one stream. A handler that reads a copy an earlier event was meant
+to fill (a welcome mail reading the user's copy) needs that copy's source and its own event on
+the same stream: on two streams, the event can overtake the copy.
+
+A service in another language can be the source: see
 [Services in other languages](other-languages.md#being-the-source-of-a-copy).
