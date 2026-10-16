@@ -13,14 +13,14 @@ use Microservices\Services\Stream\Dispatcher;
 use Microservices\Services\Stream\TransportManager;
 
 /**
- * The consumer role: reads the envelopes published by every service and runs this service's
- * handlers. The consuming service names the subscription (its own cursor), so adding a consumer
- * disturbs none of the others.
+ * The consumer role: reads the envelopes published by every service and runs the handlers of the
+ * services that run here. Each consuming service names a subscription (its own cursor), so adding
+ * a consumer disturbs none of the others.
  */
 final class ConsumeEvents extends Command
 {
     protected $signature = 'stream:consume
-        {--service= : The consuming service (default: the one running, or the only local one)}
+        {--service= : The consuming service (default: the one running, or every local one)}
         {--stream= : The stream to read (default: microservices.events.stream)}';
 
     protected $description = 'Consume events from a stream and run this service handlers.';
@@ -28,21 +28,21 @@ final class ConsumeEvents extends Command
     public function handle(Colocation $colocation, Services $services, TransportManager $transports, Dispatcher $dispatcher): int
     {
         $transport = $transports->stream($this->option('stream') !== null ? (string) $this->option('stream') : null);
-        $consumer = $this->consumer($colocation);
+        $consumers = $this->consumers($colocation);
 
-        if ($consumer === null) {
-            $this->error('Several services run here — name the consuming one with --service.');
+        if ($consumers === []) {
+            $this->error('No service runs here — name the consuming one with --service.');
 
             return self::FAILURE;
         }
 
         $channels = $services->getDeclared();
 
-        $this->info("Consuming as [{$consumer}] from: ".implode(', ', $channels));
+        $this->info('Consuming as ['.implode(', ', $consumers).'] from: '.implode(', ', $channels));
 
         $this->stopGracefullyOnSignal($transport);
 
-        $transport->consume($consumer, $channels, function (Envelope $envelope) use ($dispatcher, $consumer): void {
+        $transport->consume($consumers, $channels, function (Envelope $envelope, string $consumer) use ($dispatcher): void {
             if ($envelope->isFor($consumer)) {
                 $dispatcher->dispatch($envelope, $consumer);
             }
@@ -71,16 +71,17 @@ final class ConsumeEvents extends Command
         }
     }
 
-    private function consumer(Colocation $colocation): ?string
+    /** @return list<string> */
+    private function consumers(Colocation $colocation): array
     {
         $service = $this->option('service');
 
         if (is_string($service) && $service !== '') {
-            return $service;
+            return [$service];
         }
 
-        $local = $colocation->local();
+        $current = $colocation->current();
 
-        return $colocation->current() ?? (count($local) === 1 ? $local[0] : null);
+        return $current !== null ? [$current] : $colocation->local();
     }
 }

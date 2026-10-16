@@ -22,11 +22,11 @@ interface Transport
     /**
      * Blocking read loop, until stop() is called.
      *
-     * @param  string  $consumer  the consuming service — its own cursor (group / queue)
+     * @param  list<string>  $consumers  the consuming services — each has its own cursor (group / queue)
      * @param  list<string>  $channels  the emitting services to subscribe to
-     * @param  callable(Envelope): void  $handle
+     * @param  callable(Envelope, string): void  $handle  the envelope and the consumer it was read for
      */
-    public function consume(string $consumer, array $channels, callable $handle): void;
+    public function consume(array $consumers, array $channels, callable $handle): void;
 
     /** Asks the read loop to finish its current envelope and return — a graceful SIGTERM. */
     public function stop(): void;

@@ -170,9 +170,16 @@ app(\Microservices\Services\Stream\Outbox\ArchiveStores::class)
 php artisan stream:consume [--service=billing] [--stream=default]
 ```
 
-The command reads one stream as the consuming service, for every declared emitter on it. An entry
-whose emitter isn't a declared service is acknowledged unread. Run one process per stream, like
-`queue:work`. On `SIGTERM` it finishes the current message and stops.
+The command reads one stream for every declared emitter on it, as each service that runs in the
+process: `--service` names one, otherwise it is the service running, otherwise every local one. Each
+consuming service keeps its own cursor (a Redis group, a queue `{key}-{service}`), so several
+services in one process are served by one command. An entry whose emitter isn't a declared service
+is acknowledged unread. Run one process per stream, like `queue:work`. On `SIGTERM` it finishes the
+current message and stops.
+
+With several consuming services, the `redis` transport reads one group at a time and shares the
+stream's `block` window between them: an entry can wait up to `(N-1)/N × block` while the other
+groups are read. With `on_failure` at `block`, a failing handler delays only its own service.
 
 In a test, `Microservices\Testing\InteractsWithServices::receive('orders.order.placed', [...])`
 hands the event to the handlers, without a stream or a consumer.

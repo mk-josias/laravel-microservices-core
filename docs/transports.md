@@ -16,7 +16,7 @@ app(\Microservices\Services\Stream\TransportManager::class)
 | Method | Has to |
 |---|---|
 | `publish(Envelope $envelope)` | put the envelope on the stream, as `Envelope::toJson()` writes it, so services in other languages and other drivers read the same thing |
-| `consume(string $consumer, array $channels, callable $handle)` | loop until `stop()`, as `$consumer`'s own cursor, handing `$handle` the envelopes whose emitter is in `$channels`; acknowledge an envelope only when `$handle` returns, never when it throws |
+| `consume(array $consumers, array $channels, callable $handle)` | loop until `stop()`, keeping one cursor per name in `$consumers`, handing `$handle` each envelope whose emitter is in `$channels` and the consumer it was read for; acknowledge an envelope only when `$handle` returns, never when it throws; a consumer that fails must not hold back the others |
 | `stop()` | let the current envelope finish, then return from `consume()`: it is what a `SIGTERM` calls |
 
 ## What the package relies on

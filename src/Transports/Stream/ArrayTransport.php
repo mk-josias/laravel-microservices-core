@@ -24,18 +24,20 @@ final class ArrayTransport implements Transport
         $this->stream[] = $envelope;
     }
 
-    public function consume(string $consumer, array $channels, callable $handle): void
+    public function consume(array $consumers, array $channels, callable $handle): void
     {
-        $position = $this->cursors[$consumer] ?? 0;
+        foreach ($consumers as $consumer) {
+            $position = $this->cursors[$consumer] ?? 0;
 
-        for ($count = count($this->stream); $position < $count; $position++) {
-            $envelope = $this->stream[$position];
+            for ($count = count($this->stream); $position < $count; $position++) {
+                $envelope = $this->stream[$position];
 
-            if (in_array($envelope->emitter, $channels, true)) {
-                $handle($envelope);
+                if (in_array($envelope->emitter, $channels, true)) {
+                    $handle($envelope, $consumer);
+                }
+
+                $this->cursors[$consumer] = $position + 1;
             }
-
-            $this->cursors[$consumer] = $position + 1;
         }
     }
 
