@@ -23,17 +23,21 @@ is a deployment choice; the code that calls it, announces to it or copies its ro
 
 ```bash
 composer require mk-josias/laravel-microservices
-composer require mk-josias/laravel-microservices-rpc-http       # the http driver of calls between services
-composer require mk-josias/laravel-microservices-stream-redis   # an events driver, then MICROSERVICES_STREAM_DRIVER=redis
+# the http driver of calls between services
+composer require mk-josias/laravel-microservices-rpc-http
+# an events driver, then MICROSERVICES_STREAM_DRIVER=redis
+composer require mk-josias/laravel-microservices-stream-redis
 php artisan vendor:publish --tag=microservices-config
-php artisan migrate   # the outbox tables: event_publications, event_consumptions
+# the outbox tables: event_publications, event_consumptions
+php artisan migrate
 ```
 
 Name the application, and declare the services it talks to:
 
 ```php
 // config/microservices.php
-'name' => env('MICROSERVICES_NAME'),   // orders
+// the name of this application, here: orders
+'name' => env('MICROSERVICES_NAME'),
 
 'services' => [
     'billing' => ['host' => env('BILLING_HOST'), 'namespace' => 'Foundation\Billing'],
@@ -61,8 +65,10 @@ billing/   orders/             the applications: each requires the foundation
 ```
 
 ```bash
-php artisan foundation:make ../foundation --package=acme/foundation   # in billing: creates it, adds src/Billing
-php artisan foundation:make ../foundation                             # in orders: adds src/Orders
+# in billing: creates it, adds src/Billing
+php artisan foundation:make ../foundation --package=acme/foundation
+# in orders: adds src/Orders
+php artisan foundation:make ../foundation
 ```
 
 A service's implementation, models and migrations stay in its application. A new version of the
@@ -91,8 +97,10 @@ final class BillingRpcService extends \Microservices\Services\Rpc\RpcService imp
 // app/Providers/ServicesProvider.php, in orders
 final class ServicesProvider extends \Microservices\Providers\RpcServiceProvider
 {
-    protected array $rpc = [BillingService::class => BillingRpcService::class];         // the contracts orders calls
-    protected array $services = [OrdersService::class => \App\Services\OrdersService::class];  // the ones it answers
+    // the contracts orders calls
+    protected array $rpc = [BillingService::class => BillingRpcService::class];
+    // the ones it answers
+    protected array $services = [OrdersService::class => \App\Services\OrdersService::class];
 }
 ```
 
@@ -111,7 +119,8 @@ final class OrderPlaced extends \Microservices\Events\Event
 
     public function payload(): array { return ['id' => $this->id]; }
 
-    public function version(): int { return 1; }   // raised when the shape of the payload changes
+    // raised when the shape of the payload changes
+    public function version(): int { return 1; }
 }
 
 app(\Microservices\Contracts\Stream\Bus::class)->emit(new OrderPlaced($order->id));
@@ -165,7 +174,8 @@ return new class extends \Microservices\Migrations\ShadowMigration
     public function up(): void
     {
         Schema::create($this->table(), function (Blueprint $table) {
-            $table->unsignedBigInteger('id')->primary();   // the source's key
+            // the source's key
+            $table->unsignedBigInteger('id')->primary();
             $table->string('name');
             $table->softDeletes();
         });

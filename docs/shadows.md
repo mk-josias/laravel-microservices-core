@@ -70,8 +70,10 @@ protected static function shouldBeShadowed(array $attributes): bool
 To fill a copy created after the source already had data:
 
 ```bash
-php artisan shadows:want [--keepers=orders] [--sources=customers]   # on the keeper: ask the owners to send their rows again
-php artisan shadows:announce customers [--keepers=orders]          # on the owner: send every row again
+# on the keeper: ask the owners to send their rows again
+php artisan shadows:want [--keepers=orders] [--sources=customers]
+# on the owner: send every row again
+php artisan shadows:announce customers [--keepers=orders]
 ```
 
 Both commands address the event through its `recipients`, so only those services update their
@@ -100,7 +102,8 @@ public function shadowStream(): ?string
 ```
 
 ```bash
-php artisan stream:consume --stream=shadows   # on the keeper: one consumer per stream
+# on the keeper: one consumer per stream
+php artisan stream:consume --stream=shadows
 ```
 
 A keeper has to read that stream, or its copy stays empty. The outbox follows the stream: a row

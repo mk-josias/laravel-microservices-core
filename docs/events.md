@@ -60,7 +60,8 @@ final class OrderPlacedPayload implements \Microservices\Contracts\Stream\Versio
     public static function upcast(int $from, array $payload): array
     {
         return match ($from) {
-            1 => ['id' => $payload['id'], 'total' => $payload['amount']],   // 2 renamed amount
+            // 2 renamed amount
+            1 => ['id' => $payload['id'], 'total' => $payload['amount']],
             default => $payload,
         };
     }
@@ -143,7 +144,8 @@ Rows are published in `sequence` order, and a failing row stops the run. This on
 publisher per service, so don't run two.
 
 ```bash
-php artisan stream:republish [--service=*] [--since=2026-09-01] [--force]    # rebuild an emptied stream
+# rebuild an emptied stream
+php artisan stream:republish [--service=*] [--since=2026-09-01] [--force]
 php artisan stream:export storage/events.jsonl [--store=file] [--service=*] [--stream=default] \
     [--since=2026-08-01] [--until=2026-09-01] [--where=name=orders.order.placed] [--where=payload.status=paid] \
     [--acknowledged] [--batch=1000]
